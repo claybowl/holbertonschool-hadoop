@@ -2,6 +2,7 @@
 """function which takes list of directory paths
 and creates those directories in HDFS using
 Snakebite"""
+from snakebite.client import Client
 
 
 def createdir():
