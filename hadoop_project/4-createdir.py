@@ -5,15 +5,12 @@ Snakebite"""
 from snakebite.client import Client
 
 
-def createdir():
+def createdir(directory_list):
     """takes list of directory paths and creates directories"""
-    client = Client('localhost', 9000) # replace with hadoop NameNode host info
-    for dir in l:
-        result = client.mkdir([dir]), create_parent=True)
-        for r in result:
-            print({'path': r['path'], 'result': r['result']}]
+    client = Client("localhost", 9000)
 
-if __name__ == "__main__":
-    # usage
-    dir_list = ["/Betty", "/Betty/Holberton"]
-    createdir(dir_list)
+    try:
+        for x in client.mkdir(directory_list):
+            print(x)
+    except Exception as e:
+        print("Error: {}".format(e))

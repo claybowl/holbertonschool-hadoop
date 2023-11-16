@@ -1,37 +1,20 @@
 #!/usr/bin/python2.7
 """task 4"""
 from snakebite.client import Client
-import os
 
 
-def download():
-    client = Client('localhost', 5000)
+def deletedir(directory_list):
+    # Initialize Snakebite client
+    client = Client("localhost", 9000)
 
-    results = []
-    for file_path in l:
-        local_path = '/tmp/' + os.path.basename(file_path)
-        result_dict = {'path': local_path, 'result': False, 'error': '', 'source_path': file_path}
+    # sort directory list in reverse order
+    directory_list.sort(reverse=True)
+    try:
+        for x in client.rmdir(directory_list):
+            print(x)
+    except Exception as e:
+        print("Error: {}".format(e))
 
-
-        try:
-            for _ in client.copyToLocal([file_path], '/tmp'):
-                pass
-            result_dict['result'] = True
-        except Exception as e:
-            result_dict['error'] = str(e)
-
-        results.append(result_dict)
-
-    return results
-
-
-
-if __name__ == "__main__":
-    l = ["/holbies/input/lao.txt"]
-    result = download(l)
-    for r in result:
-        print(r)
-
-
-    with open('/tmp/lao.txt', 'r') as file:
-        print(file.read())
+if __name__ == '__main__':
+    directory_list = ["/Betty", "/Betty/Holberton"]
+    deletedir(directory_list)

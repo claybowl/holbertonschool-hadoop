@@ -1,36 +1,38 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python3
+"""Reducer script to find the top ten salaries."""
+
 import sys
-import heapq
+import re
 
-def parse_input(file):
-    for line in file:
-        yield line.strip()
+def parse_line(line):
+    """Parse line and extract id, company, and salary."""
+    parts = re.split('\t|,', line.strip())
+    if len(parts) == 3:
+        try:
+            return int(parts[0]), parts[1], float(parts[2])
+        except ValueError:
+            return None
+    return None
 
-def reducer():
-    min_heap = []
+def main():
+    top_salaries = []
 
-    for line in parse_input(sys.stdin):
-        parts = line.split('\t')
-        if len(parts) == 2:
-            _, value = parts
-            company, salary = value.rsplit(',', 1)
-            try:
-                salary = float(salary)
-                # Add to the heap and maintain the size of 10
-                if len(min_heap) < 10:
-                    heapq.heappush(min_heap, (salary, line))
-                else:
-                    heapq.heappushpop(min_heap, (salary, line))
-            except ValueError:
-                pass  # Ignore lines where salary is not a number
+    for line in sys.stdin:
+        parsed_line = parse_line(line)
+        if parsed_line:
+            id, company, salary = parsed_line
 
-    # Extract the top ten salaries
-    top_salaries = heapq.nlargest(10, min_heap)
-    
-    # Print the results
+            # Add to top_salaries and maintain its size to 10
+            if len(top_salaries) < 10:
+                top_salaries.append((id, company, salary))
+            elif salary > top_salaries[-1][2]:
+                top_salaries[-1] = (id, company, salary)
+            
+            top_salaries.sort(key=lambda x: x[2], reverse=True)
+
     print("id\tSalary\tcompany")
-    for salary, line in sorted(top_salaries, reverse=True):
-        print(line)
+    for id, company, salary in top_salaries:
+        print(f"{id}\t{salary}\t{company}")
 
 if __name__ == "__main__":
-    reducer()
+    main()
